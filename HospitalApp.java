@@ -28,7 +28,7 @@ public class HospitalApp {
 
             switch (option) {
                 case 1:
-                    hospital.displayAllPatients();
+                    hospital.DoctorOrPatient();
                     break;
                 case 2:
                     hospital.removeDoctor();
@@ -40,6 +40,12 @@ public class HospitalApp {
                     hospital.setAppointment();
                     break;
                 case 5:
+                    hospital.setAppointment();
+                    break;
+                case 6:
+                    hospital.displayPatientsWithDoctors();
+                    break;
+                case 8:
                     running = false;
                     System.out.println("Goodbye");
                     break;

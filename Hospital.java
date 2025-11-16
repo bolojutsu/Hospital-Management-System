@@ -1,9 +1,11 @@
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Hospital {
 
     private final GenericLinkedList<Doctor> listOfDoctors;
     private final GenericLinkedList<Patient> listOfPatients;
+    private final HashSet<Doctor> assignedDoctors = new HashSet<>();
     private final Scanner scanner;
 
     public Hospital() {
@@ -144,6 +146,51 @@ public class Hospital {
     }
 
     public void setAppointment() {
+        if (listOfPatients.isEmpty()) {
+            System.out.println("No patients available. Add patient first");
+            return;
+        }
+        if (listOfDoctors.isEmpty()) {
+            System.out.println("No doctors availble. Add a doctor first");
+            return;
+        }
 
+        displayAllPatients();
+        System.out.println("Enter a patient name for appointment");
+        String patientName = scanner.nextLine();
+
+        Patient selectedPatient = findPatientByName(patientName);
+        if (selectedPatient == null) {
+            throw new NullPointerException();
+        }
+        if (selectedPatient.hasDoctorAssigned()) {
+            System.out.println("This patient already has a doctor " + selectedPatient.getAssignedDoctor().getName());
+            return;
+        }
+
+        displayAllDoctors();
+        System.out.println("Enter doctor emplyoee ID for assignment: ");
+        try {
+            int doctorId = scanner.nextInt();
+            Doctor selectedDoctor = findDoctorByID(doctorId);
+            if (selectedDoctor == null) {
+                throw new NullPointerException();
+            }
+
+            selectedPatient.setAssignedDoctor(selectedDoctor);
+            assignedDoctors.add(selectedDoctor);
+            System.out.println("Appointment set!" + patientName + " assigned to Dr. " + selectedDoctor.getName());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalied ID. Please enter a number.");
+        }
+    }
+
+    public void displayPatientsWithDoctors() {
+        System.out.println("\n - - - Patients and Their Doctors - - -");
+        for (int i = 0; i < listOfPatients.size(); i++) {
+            System.out.println(listOfPatients.get(i).toString());
+        }
+        System.out.println("-----------------------------------\n");
     }
 }

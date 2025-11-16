@@ -1,10 +1,12 @@
 public class Patient extends Person {
 
     private String illness;
+    private Doctor assignedDoctor;
 
     public Patient(String name, int age, char gender, String dateOfBirth, String illness) {
         super(name, age, gender, dateOfBirth);
         this.illness = illness;
+        this.assignedDoctor = null;
     }
 
     public String getIllness() {
@@ -15,9 +17,25 @@ public class Patient extends Person {
         this.illness = illness;
     }
 
+    public Doctor getAssignedDoctor() {
+        return assignedDoctor;
+    }
+
+    public void setAssignedDoctor(Doctor doctor) {
+        this.assignedDoctor = doctor;
+    }
+
+    public boolean hasDoctorAssigned() {
+        return this.assignedDoctor != null;
+    }
+
     @Override
     public String toString() {
-        return super.toString() + String.format("Illness: %s", illness);
+        String doctorInfo = (assignedDoctor != null)
+                ? String.format(" | Assigned Doctor: %s (ID: %d)",
+                        assignedDoctor.getName(), assignedDoctor.getEmployeeId())
+                : " | Assigned Doctor: None";
+        return super.toString() + String.format(" | Illness: %s%s", illness, doctorInfo);
     }
 
     @Override
@@ -29,7 +47,9 @@ public class Patient extends Person {
         if (obj instanceof Patient) {
             Patient newPaitent = (Patient) obj;
             if (this.illness.equals(newPaitent.illness)) {
-                return true;
+                if (this.assignedDoctor == newPaitent.assignedDoctor) {
+                    return true;
+                }
             }
         }
         return false;
