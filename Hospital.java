@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -157,12 +162,12 @@ public class Hospital {
 
         displayAllPatients();
         System.out.println("Enter a patient name for appointment");
-        String patientName = scanner.nextLine();
-
+        String patientName = scanner.nextLine().toLowerCase();
         Patient selectedPatient = findPatientByName(patientName);
         if (selectedPatient == null) {
             throw new NullPointerException();
         }
+
         if (selectedPatient.hasDoctorAssigned()) {
             System.out.println("This patient already has a doctor " + selectedPatient.getAssignedDoctor().getName());
             return;
@@ -192,5 +197,89 @@ public class Hospital {
             System.out.println(listOfPatients.get(i).toString());
         }
         System.out.println("-----------------------------------\n");
+    }
+
+    public void saveToFile(String fileName) {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(fileName));
+            writer.println("Hospital Management System");
+            writer.println();
+            writer.println("List of Doctors");
+            for (int i = 0; i < listOfDoctors.size(); i++) {
+                Doctor doctor = listOfDoctors.get(i);
+                writer.println(doctor.getName() + ", " + doctor.getAge() + ", " + doctor.getGender() + ", "
+                        + doctor.getDateOfBirth() + ", " + doctor.getProfession());
+            }
+            writer.println();
+            writer.println("List of Patients");
+            for (int i = 0; i < listOfPatients.size(); i++) {
+                Patient patient = listOfPatients.get(i);
+                writer.println(patient.getName() + ", " + patient.getAge() + ", " + patient.getGender() + ", "
+                        + patient.getDateOfBirth() + ", "
+                        + patient.getIllness());
+            }
+
+            writer.println();
+        } catch (Exception e) {
+            System.out.println("Error saving file: " + e.getMessage());
+        }
+
+    }
+
+    public void loadFromFile(String filename) {
+        listOfDoctors.removeAll();
+        listOfPatients.removeAll();
+        assignedDoctors.clear();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)))) {
+            String line = reader.readLine();
+
+            // Used for skiping empty lines in file
+            while ((line = reader.readLine()) != null && !line.startsWith("List Of Doctors")
+                    && !line.trim().isEmpty()) {
+                // Skip empty lines
+            }
+
+            // used for loading doctors
+            while ((line = reader.readLine()) != null && !line.startsWith("List Of Doctors")
+                    && !line.trim().isEmpty()) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    try {
+                        String name = parts[0].trim();
+                        int age = Integer.parseInt(parts[1].trim());
+                        char gender = parts[2].charAt(0);
+                        String dateOfBirth = parts[3].trim();
+                        String profession = parts[4].trim();
+                        Doctor newDoctor = new Doctor(name, age, gender, dateOfBirth, profession);
+                        listOfDoctors.add(newDoctor);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping malformed doctor record: " + line);
+                    }
+                }
+            }
+            // used for loadt patients
+            while ((line = reader.readLine()) != null && !line.startsWith("List Of Doctors")
+                    && !line.trim().isEmpty()) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    try {
+                        String name = parts[0].trim();
+                        int age = Integer.parseInt(parts[1].trim());
+                        char gender = parts[2].charAt(0);
+                        String dateOfBirth = parts[3].trim();
+                        String illness = parts[4].trim();
+                        Patient newPatient = new Patient(name, age, gender, dateOfBirth, illness);
+                        listOfPatients.add(newPatient);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Skipping malformed patient record: " + line);
+                    }
+                }
+            }
+
+            System.out.println("Data loaded successfully from " + filename);
+        } catch (Exception e) {
+            System.out.println("Error loading file: " + e.getMessage());
+        }
     }
 }
