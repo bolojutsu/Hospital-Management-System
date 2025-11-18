@@ -20,35 +20,47 @@ public class Hospital {
     }
 
     public void DoctorOrPatient() {
-        System.out.println("Enter your Name: ");
-        String name = scanner.nextLine().toLowerCase();
-
-        System.out.println("Enter your Age: ");
-        int age = scanner.nextInt();
-
-        System.out.println("Enter your gender(M/F)");
-        char gender = scanner.next().charAt(0);
-
-        System.out.println("Enter your Date Of birth: ");
-        String dateOfBirth = scanner.nextLine();
-
-        System.out.println("Are you a Doctor or Patient?");
-        String answer = scanner.nextLine().toLowerCase();
-
+        System.out.println("Welcome to the Hospital Management System");
         try {
+            System.out.println("Are you a Doctor or Patient?");
+            String answer = scanner.nextLine().toLowerCase();
             if (answer.equals("doctor")) {
-                System.out.println("What is your Profession");
+                System.out.println("Enter your name: ");
+                String name = scanner.nextLine();
+
+                System.out.println("Enter your gender: ");
+                char gender = scanner.nextLine().charAt(0);
+
+                System.out.println("Enter your Date Of Birth: ");
+                String dateOfBirth = scanner.nextLine();
+
+                System.out.println("Enter your profession: ");
                 String profession = scanner.nextLine();
+
+                System.out.println("Enter your age: ");
+                int age = scanner.nextInt();
+
                 Doctor newDoctor = new Doctor(name, age, gender, dateOfBirth, profession);
                 listOfDoctors.add(newDoctor);
-            } else if (answer.equals("patient")) {
-                System.out.println("What is your illness");
+                System.out.println("New Doctor added.");
+            } else {
+                System.out.println("Enter your name: ");
+                String name = scanner.nextLine();
+                System.out.println("Enter your age: ");
+                int age = scanner.nextInt();
+                System.out.println("Enter your gender: ");
+                char gender = scanner.next().charAt(0);
+                System.out.println("Enter your Date Of Birth: ");
+                String dateOfBirth = scanner.nextLine();
+                System.out.println("Enter your Illness");
                 String illness = scanner.nextLine();
+
                 Patient newPatient = new Patient(name, age, gender, dateOfBirth, illness);
                 listOfPatients.add(newPatient);
+                System.out.println("New Patient added.");
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error invalid Argument: " + e.getMessage());
         }
     }
 
@@ -78,7 +90,7 @@ public class Hospital {
         }
         System.out.println("\n--- List Of Doctors ---");
         for (int i = 0; i < listOfDoctors.size(); i++) {
-            listOfDoctors.get(i).toString();
+            System.out.println(listOfDoctors.get(i).toString());
         }
         System.out.println("-----------------------\n");
     }
@@ -90,7 +102,7 @@ public class Hospital {
 
         System.out.println("List of Patients");
         for (int i = 0; i < listOfPatients.size(); i++) {
-            listOfPatients.get(i).toString();
+            System.out.println(listOfPatients.get(i).toString());
         }
         System.out.println("-----------------------\n");
     }
